@@ -7,7 +7,7 @@ You must write an algorithm with O(log n) runtime complexity.
 
 `思路：`暂时觉得一看见 O(log n)就往binary上想。
 
-`关注点：`这题已经看过一次视频，听过一次讲座，还是写不对。在=、+1和-1里纠结。
+`关注点：`这题已经看过一次视频，听过一次讲座，还是写不对。在=、+1和-1里纠结。 
 
 ```python
 class Solution:
