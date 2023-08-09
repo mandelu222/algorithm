@@ -21,7 +21,7 @@ class Solution:
             if nums[mid] == target:
                 return mid
             elif nums[mid] > target:
-                # 三：此时target在左区间，双包含[left, middle-1]，因为middle已经看过了，直接看到middle左边一个数就可以了。
+                # 三：此时target在左区间，双包含[left, middle-1]，因为middle已经看过了，直接看到middle左边一个数就可以了。 
                 right = mid - 1 
             else:
                 # 四：此时target在右区间，双包含[middle+ 1, right]，同样因为middle已经看过了，直接看到middle右边一个数就可以了。
