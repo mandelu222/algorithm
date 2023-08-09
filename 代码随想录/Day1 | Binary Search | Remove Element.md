@@ -5,6 +5,27 @@ _Given an array of integers nums which is sorted in ascending order, and an inte
 
 _You must write an algorithm with O(log n) runtime complexity._
 
+```python
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        left = 0
+        right = len(nums)-1
+        # 一： 既然上面的定义已经可以取到[left, right]， 这里就应该加等号，可以想到特殊情况如只有1个number，两个index必然重合
+        while left <= right:
+            # 二：一开始用了"/"而不是"//", 直接报错产生floating; 然后换成int(), 最后换成答案里的//。这个两个应该都是向下取整，结果是一样的。
+            mid = left + (right - left)//2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] > target:
+                # 三：此时target在左区间，[left, middle-1]，因为middle已经看过了，直接看到middle左边一个数就可以了。
+                right = mid - 1 
+            else:
+                # 四：此时target在右区间，[middle+ 1, right]，同样因为middle已经看过了，直接看到middle右边一个数就可以了。
+                left = mid + 1
+        # 五：第一次忘记return -1了
+        return -1
+```
+
 
 ## #27 Remove Element 
 (https://leetcode.com/problems/remove-element/)
