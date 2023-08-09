@@ -42,12 +42,19 @@ _Consider the number of elements in nums which are not equal to val be k, to get
 _Change the array nums such that the first k elements of nums contain the elements which are not equal to val. The remaining elements of nums are not important as well as the size of nums.
 Return k._
 
-`思路：` 移除的题目就想到pop，因为反正留着也没用。但重要的是如何一边pop还能一边知道自己在哪里，然后遍历到arry的最后一位。这个不算滑动窗口，但直觉需要两个pointer，一个track当前位置，一个指向最后一位，告诉当前位置可以停止了。虽然理论上不停地算len(nums)也可以，但是不停调用len速度就没那么快了。
+`思路：` 移除的题目就想到pop，因为反正留着也没用。但重要的是如何一边pop还能一边知道自己在哪里，然后遍历到arry的最后一位。这个不算滑动窗口，但直觉需要两个pointer，一个track当前位置，一个指向最后一位，告诉当前位置可以停止了。虽然理论上不停地算len(nums)也可以，但是不停调用len速度就没那么快了。但问题是pop(n)是log(n), 加上loop就是n^2的time complexity. 
+
+然后视频给的是另外一种快慢双指针的写法，只用loop一边。O(n), 但不知道为什么lc提交反而第一种方法比较快(32ms vs. 41ms)。。。以下是两种做法的code
+
+
+`关注点：`第二种方法必须画图才能行。建议看视频https://www.bilibili.com/video/BV12A4y1Z7LP/?vd_source=5d163d78c46b415677c71a21dcf4977b
+简而言之就是：fast总是往前移，但只有fast指向的数和val不一样时，才把fast的数给到slow, 然后slow前移。这样就把所有不一样的值copy到slow指向的一个个位置里。
+感觉这也是题目为什么强调`The remaining elements of nums are not important as well as the size of nums`
 
 ```python
 class Solution:
     def removeElement(self, nums: List[int], val: int) -> int:
-        count = 0
+
         left = 0
         right = len(nums) -1 
 
@@ -59,4 +66,19 @@ class Solution:
                 left += 1
 
         return len(nums)
+```
+
+```python
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+
+        slow = 0
+        length = len(nums)
+
+        for fast in range(length):
+            if nums[fast] != val:
+                nums[slow] = nums[fast]
+                slow += 1
+        
+        return slow
 ```
