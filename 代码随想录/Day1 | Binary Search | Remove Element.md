@@ -34,9 +34,29 @@ class Solution:
 ## #27 Remove Element 
 (https://leetcode.com/problems/remove-element/)
 
+`题目：`
 _Given an integer array nums and an integer val, remove all occurrences of val in nums in-place. The order of the elements may be changed. Then return the number of elements in nums which are not equal to val._
 
 _Consider the number of elements in nums which are not equal to val be k, to get accepted, you need to do the following things:_
 
 _Change the array nums such that the first k elements of nums contain the elements which are not equal to val. The remaining elements of nums are not important as well as the size of nums.
 Return k._
+
+`思路：` 移除的题目就想到pop，因为反正留着也没用。但重要的是如何一边pop还能一边知道自己在哪里，然后遍历到arry的最后一位。这个不算滑动窗口，但直觉需要两个pointer，一个track当前位置，一个指向最后一位，告诉当前位置可以停止了。虽然理论上不停地算len(nums)也可以，但是不停调用len速度就没那么快了。
+
+```python
+class Solution:
+    def removeElement(self, nums: List[int], val: int) -> int:
+        count = 0
+        left = 0
+        right = len(nums) -1 
+
+        while left <= right:
+            if nums[left] == val:
+                right -= 1
+                nums.pop(left)
+            else:
+                left += 1
+
+        return len(nums)
+```
