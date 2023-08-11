@@ -60,3 +60,26 @@ Design your implementation of the linked list. You can choose to use a singly or
 `题目：`
 Given the head of a singly linked list, reverse the list, and return the reversed list.
 
+`思路：` 完全是从别人的视频里看来的。。。
+
+`关注点：`
+
+```python
+
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head is None:
+            return head
+
+        dummyNode = ListNode(float('inf'))
+
+        curr = head
+
+        while curr:   #只要现在这个node有值就要处理这个node
+            new_curr = curr                  # 用一个新的pointer先保存住node A的地址
+            curr = curr.next                 # tracking pointer可以move到下一个node B了
+            new_curr.next = dummyNode.next   # 现在A可以跟B断开了，用dummy Node作为新LL的虚拟头，不断把跟之前LL断开的Node插入dummy和dummy.next之间
+            dummyNode.next = new_curr        
+            
+        return dummyNode.next
+```
