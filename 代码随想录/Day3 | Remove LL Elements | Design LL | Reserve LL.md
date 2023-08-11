@@ -5,9 +5,7 @@
 `题目：`
 Given the head of a linked list and an integer val, remove all the nodes of the linked list that has Node.val == val, and return the new head.
 
-`思路：` 
-
-`关注点：`
+`思路：` 这个没什么好说的。常规操作。唯一特殊的地方是第一次写dummy头。
 
 ```python
 class Solution:
