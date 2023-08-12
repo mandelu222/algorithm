@@ -7,6 +7,27 @@ You are given the head of a linked list, and an integer k.
 
 Return the head of the linked list after swapping the values of the kth node from the beginning and the kth node from the end (the list is 1-indexed).
 
+`关注点：`尼玛两个nod的swap写了半天，实在不行了看答案才发现只要求swap value！
+
+```python
+class Solution:
+    def swapNodes(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+
+        # no None head as per constraints
+        curr_1 = curr_2 = temp = head
+        for i in range(k - 1):
+            curr_1 = curr_1.next
+            temp = temp.next
+        
+        while temp.next:
+            curr_2 = curr_2.next
+            temp = temp.next
+
+        curr_1.val, curr_2.val = curr_2.val, curr_1.val
+
+        return head
+
+```
 
 ## #876. Middle of the Linked List
 (https://leetcode.com/problems/middle-of-the-linked-list/)
