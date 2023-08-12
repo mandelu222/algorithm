@@ -165,8 +165,34 @@ class Solution:
 ## #142. Linked List Cycle II
 (https://leetcode.com/problems/linked-list-cycle-ii/)
 
+`题目：`
 Given the head of a linked list, return the node where the cycle begins. If there is no cycle, return null.
 
 There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to (0-indexed). It is -1 if there is no cycle. Note that pos is not passed as a parameter.
 
 Do not modify the linked list.
+
+`思路：`
+联想到之前做过的一道找数组中两数和为target的题，觉得可以用dict来做。遍历LL一路存节点的地址到dict，只要某个节点的地址被存过，那这个就是被两次point到的要找的Node。
+
+`关注点：`
+发现视频给出的解答并不是我的方法，而是双指针法，感觉有点复杂。就先略过了。
+
+```python
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+
+        dummyNode = ListNode(float('inf'))
+        dummyNode.next = head
+        curr = dummyNode
+
+        linked_list = {}
+
+        while curr:
+            if curr.next in linked_list.keys():
+                return curr.next
+            linked_list[curr.next] = 0
+            curr = curr.next
+
+        return None
+```
