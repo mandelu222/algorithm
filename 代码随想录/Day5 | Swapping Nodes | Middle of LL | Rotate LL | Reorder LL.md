@@ -46,6 +46,49 @@ class Solution:
 `题目：`
 Given the head of a linked list, rotate the list to the right by k places.
 
+`思路：`把LL的end和head连成一个环，从距end k step处断开，就是个rotate的过程了
+
+```python
+
+class Solution:
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+
+        # handle empty list and return None directly, save trouble for later 
+        if head is None:
+            return None
+        
+        # get the effective rorating step by % k by length of the LL
+        curr = head
+        length = 1
+        while curr and curr.next:
+            length += 1
+            curr = curr.next
+
+        steps = k % length
+
+        # the distance of the 2 pointers is the section of k that we want to operate. 
+        # Move the fast to the end of LL, link to head and disconnect the LL from slow
+        # Don't forget to move head to slow
+        fast = slow = head
+
+        for i in range(steps):
+            fast = fast.next
+
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+
+        fast.next = head
+        head = slow.next
+        slow.next = None
+
+        return head
+
+```
+
+
+
+
 ## #143. Reorder List
 (https://leetcode.com/problems/reorder-list/)
 
