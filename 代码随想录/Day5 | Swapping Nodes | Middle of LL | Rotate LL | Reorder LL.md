@@ -108,8 +108,6 @@ class Solution:
 ```
 
 
-
-
 ## #143. Reorder List
 (https://leetcode.com/problems/reorder-list/)
 
@@ -121,3 +119,49 @@ Reorder the list to be on the following form:
 
 L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
 You may not modify the values in the list's nodes. Only nodes themselves may be changed.
+
+`思路：`三步走，见comment。
+
+```python
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        
+        # decide at where to split the LL; curr point to the last node of the first half
+        curr = head
+        n = 0
+        while curr:
+            curr = curr.next
+            n += 1
+
+        first_length = n - (n - 1) // 2 
+        curr = head
+        for _ in range(first_length - 1):
+            curr = curr.next
+
+        # work from the next item, and reverse the 2nd half of the list
+        start = curr.next
+        # break the original list from the curr point
+        curr.next = None
+        dummyNode = ListNode(float("inf"))
+
+        while start:
+            new_curr = start
+            start= start.next
+            new_curr.next = dummyNode.next
+            dummyNode.next = new_curr
+
+        # with 2 LL (the original half and the reverted 2nd half)
+        curr_1 = head
+        curr_2 = dummyNode.next
+
+        while curr_2:
+            pointer = curr_2
+            curr_2 = curr_2.next   # move curr_2 first before insert
+
+            pointer.next = curr_1.next
+            curr_1.next = pointer
+            
+            # as one item merged in, move curr_1 2 steps ahead
+            curr_1 = curr_1.next.next 
+
+```
