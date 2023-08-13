@@ -8,34 +8,31 @@ Given a linked list, swap every two adjacent nodes and return its head. You must
 就是先用curr locate到一个node，然后做swap，然后移动curr到下一个为止，继续swap。
 
 `关注点：`
-刚才用双指针很顺利，就老想用。其实这个情况用一个curr确定下一次循环时停下来的位置就好了。比较tricky的是用temp给两个node换位置的操作。预先知道需要curr，temp1和temp2，我写出来了。但如果自己去decide需要哪些辅助variable还是做不出。
-
-另外就是while的条件和特殊情况的处理。如剩下一个node。其实都可以generalize。我之前专门写一句就多余了。
+两个temp的使用。如果想不清楚就先画图，确定哪些node会被断开，然后用temp保存地址。while的condition要想清楚。
 
 ```python
 class Solution:
     def swapPairs(self, head: Optional[ListNode]) -> Optional[ListNode]:
-
+        # 因为可能需要对头指针进行操作，需要从head前一个node操作。所以使用dummyhead
         dummyNode = ListNode(float('inf'))
         dummyNode.next = head
-
-        # if dummyNode.next is None or dummyNode.next.next is None:
-        #     return dummyNode.next    多余
-
         curr = dummyNode
 
+        # 如果LL为偶数个，curr.next为空则结束；否则，curr.next.next为空结束
+        # 同样适用于空LL
         while curr.next and curr.next.next:
+
+            # 在接下来的过程中， 会有2个node被断开，先保存这个两个node
             temp1 = curr.next
-            temp2 = curr.next.next
-
-            temp1.next = temp2.next
-            temp2.next = temp1
-            curr.next = temp2
-
+            temp2 = curr.next.next.next
+            # 然后进行swap，重新链接各个node
+            curr.next = curr.next.next
+            curr.next.next = temp1
+            temp1.next = temp2
+            # 往后移两位
             curr = curr.next.next
 
         return dummyNode.next
-
 ```
 
 
@@ -193,6 +190,47 @@ class Solution:
                 return curr.next
             linked_list[curr.next] = 0
             curr = curr.next
+
+        return None
+```
+然后发现上面写的挺傻逼的。为什么需要dict，明明用一个set就可以了，也不用dummy。。。或者next
+
+```python
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        curr = head
+        linked_list = set()
+
+        while curr:
+            if curr in linked_list:
+                return curr
+            linked_list.add(curr)
+            curr = curr.next
+
+        return None
+```
+
+这个是一个数学方法解出来的做法：详细解释见（https://www.bilibili.com/video/BV1if4y1d7ob/?spm_id_from=333.788&vd_source=5d163d78c46b415677c71a21dcf4977b)
+
+总结一下就是：快慢指针，一个2步一个1步，如果有环终于会相遇(fast == slow)。如果相遇了，从相遇地点，和从head，2个指针一起移动，终将会在环入口相遇。
+
+```python
+class Solution:
+    def detectCycle(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        slow = fast = head
+
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+
+            if fast == slow: 
+                index1 = fast
+                index2 = head
+                while index1 != index2:
+                    index1 = index1.next
+                    index2 = index2.next
+
+                return index1
 
         return None
 ```
