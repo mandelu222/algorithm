@@ -136,26 +136,45 @@ class MyLinkedList:
 `题目：`
 Given the head of a singly linked list, reverse the list, and return the reversed list.
 
-`思路：` 完全是从别人的视频里看来的。。。
+`思路：` 第二个LL从结尾None开始，然后不断把第一个LL的Node连去第二个LL。
 
-`关注点：`
+`关注点：`操作2个LL或者有需要断开一个node的情况时，用temp暂时存住Node的信息。
 
 ```python
 
 class Solution:
     def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
         if head is None:
-            return head
+            return None
 
-        dummyNode = ListNode(float('inf'))
+        # 不存在插入、删除元素，没有必要用虚拟节点，直接从头结点开始
+        curr = head   # 1. 用于track第一个LL
+        pre = None    # 2. 用于track第二个LL，从后向前，None 即为最后的tail
 
-        curr = head
+        while curr:  # 只要原LL还有值就继续操作
+            temp = curr.next    # 如果直接把curr.next指向pre(连去LL2), 会丢失LL1的track。所以要先存一个temp;    
+            curr.next = pre     # LL1当前Node指向LL2，与LL1断开；
+            pre = curr          # LL2向后移动一位；
+            curr = temp         # LL1向后移动一位；
 
-        while curr:   #只要现在这个node有值就要处理这个node
-            new_curr = curr                  # 用一个新的pointer先保存住node A的地址
-            curr = curr.next                 # tracking pointer可以move到下一个node B了
-            new_curr.next = dummyNode.next   # 现在A可以跟B断开了，用dummy Node作为新LL的虚拟头，不断把跟之前LL断开的Node插入dummy和dummy.next之间
-            dummyNode.next = new_curr        
-            
-        return dummyNode.next
+        return pre   # 必须返回新LL头节点
+```
+坑爹的S(n)空间复杂度的递归法：完全根据iteration的方法写出来。其实完全是把遍历用递归写了一遍。
+
+```python
+
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head is None:
+            return None
+        return self.reserve(head, None)   # curr 和 pre 的初始值
+
+    def reserve(self, curr: Optional[ListNode], pre: Optional[ListNode]):
+        if curr is None:     # 终止条件，直接return pre
+            return pre
+
+        temp = curr.next   # 和iteration法一毛一样的两行
+        curr.next = pre
+
+        return self.reserve(temp, curr)   # 递归，move curr 和 pre to next, and reverse curr.next (which is stored in temp) 和 pre (which is curr)
 ```
