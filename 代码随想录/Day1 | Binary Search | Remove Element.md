@@ -70,10 +70,45 @@ Given an array of integers nums sorted in non-decreasing order, find the startin
 
 If target is not found in the array, return [-1, -1]. You must write an algorithm with O(log n) runtime complexity.
 
+`思路：`如果忘记了可以去看一下下面的youtube。这个从理解上比其他地方的解法更加的直观一点。
 
-`思路：`思路是要找到第一个mid后向左和向右binary search继续找。但是写不出来code。这里把题解的链接贴一下。复习的时候可以再次尝试写一写。
-（https://programmercarl.com/0034.%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE.html#%E6%80%9D%E8%B7%AF）
+```python
+# explanations @ https://www.youtube.com/watch?v=4sQL7R5ySUU
 
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        left_index = self.getBoundary(nums, target, True)
+        right_index = self.getBoundary(nums, target, False)
+
+        return [left_index, right_index]
+    
+
+    # add isleft Boolean to decide if we are to find left-most boundary or right
+    def getBoundary(self, nums: List[int], target: int, isleft: bool):
+
+        left, right = 0, len(nums) - 1
+        index = -1    # if index is not updated below, return -1 as required
+
+        while left <= right:
+            mid = left + (right - left) // 2
+            if nums[mid]  > target:
+                right = mid - 1
+            elif nums[mid]  < target:
+                left = mid + 1
+            else:
+                # Ordinary BS will return mid; however here we will assign mid value to index, and keep looking from here
+                index = mid
+                # if we are to work on left-most bondary, we try to move the right towards left, and get into loop again. 
+                # if we get another mid that equals to target, we update index above; otherwise keep the previous index value;
+                # Until the loop condition met; 
+                if isleft:
+                    right = mid - 1
+                # To look for right-most boundary, we move left towards right
+                else:
+                    left = mid + 1
+        
+        return index 
+```
 
 ## #27 Remove Element 
 (https://leetcode.com/problems/remove-element/)
