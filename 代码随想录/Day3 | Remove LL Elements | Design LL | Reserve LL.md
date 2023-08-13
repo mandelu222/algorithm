@@ -45,10 +45,10 @@ Design your implementation of the linked list. You can choose to use a singly or
 
 `思路：` 
 这个题目真的是写的五味陈咋。各种崩溃。因为一定不想看答案，结果就是不停有edge case崩掉。每个method都define一个dummy node也是很崩溃。结果队友让我直接在initiate LL class的时候用dummy Node。这样这个LL object就总是会有一个dummy Node。因为永远不会操作这个Node本身，而是从dummy.next开始，所以也不用一直维护一个real head。
+然后看了老师的答案，发现最重要的一个difference就是**maintain一个size的featrue**。
 
 `关注点：`
-空LL和index invalid是最崩溃的情况，为了handle add/delete at index， 专门写了一个get_index_node的function，返回LL index**前**一个node。
-`晚一点可以考虑用双节点再写一次。`
+1. 一直维护一个LL的长度信息； 2. 总是指向要操作节点的前一个节点, or always work on curr.next
 
 ```python
 
@@ -61,24 +61,28 @@ class MyLinkedList:
 
     def __init__(self):
         self.dummy = Node(float("inf"))
+        self.size = 0          # <------这个是最最最最重要的。解决了几乎所有判断 index invalid的问题
+
 
     def get(self, index: int) -> int:
-
-        curr = self.dummy
-
+        if index < 0 or index > self.size - 1: 
+            return -1
+        
+        curr = self.dummy.next     # 如果index为0就直接是head。所以可以直接从dummy.next开始。如果index为0就不用进循环
+        
         for i in range(index):
-            if curr.next:
-                curr = curr.next
-            else:
-                return -1
+            curr = curr.next
 
-        return curr.next.value if curr.next else -1
+        return curr.value
 
     def addAtHead(self, val: int) -> None:
 
         newNode = Node(val)
         newNode.next = self.dummy.next
         self.dummy.next = newNode
+
+        self.size += 1
+
 
     def addAtTail(self, val: int) -> None:
 
@@ -91,41 +95,39 @@ class MyLinkedList:
 
         curr.next = newNode
 
-    def get_index_node(self, index: int):
+        self.size += 1
 
-        curr = self.dummy
-
-        if curr.next is None:
-            return None
-
-        for i in range(index):
-            if not curr.next:
-                return None
-            else:
-                curr = curr.next
-                i += 1
-        
-        return curr
 
     def addAtIndex(self, index: int, val: int) -> None:
 
-        newNode = Node(val)  
+        if index < 0 or index > self.size:     # 这里index判断有一点点不同，允许index的值为LL长额度
+            return
 
-        curr = self.get_index_node(index)
+        newNode = Node(val)
+        curr = self.dummy      # 总是从dummy表头开始，这样就一直操作curr.next。curr总是指向需操作节点的前一个位置
 
-        if curr:
-            newNode.next = curr.next
-            curr.next = newNode
+        for i in range(index):
+            curr = curr.next
+        
+        newNode.next = curr.next
+        curr.next = newNode
 
-        elif curr is None and self.dummy.next is None and index == 0:   # handle empty LL and index is 0
-            self.addAtHead(val) 
+        self.size += 1
 
 
     def deleteAtIndex(self, index: int) -> None:
         
-        curr = self.get_index_node(index)    
-        if curr and curr.next:
-            curr.next = curr.next.next
+        if index < 0 or index > self.size - 1:
+            return
+
+        curr = self.dummy
+
+        for i in range(index):
+            curr = curr.next
+
+        curr.next = curr.next.next
+
+        self.size -= 1
 ```
 
 ## #206 Reverse Linked List
