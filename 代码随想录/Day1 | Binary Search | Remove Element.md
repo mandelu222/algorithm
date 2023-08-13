@@ -29,6 +29,50 @@ class Solution:
         # 五：第一次忘记return -1了
         return -1
 ```
+## #35. Search Insert Position
+(https://leetcode.com/problems/search-insert-position/description/)
+
+`题目：`
+和上面一样的题目，唯一的不同是如果找不到，返回suppose应该插入的index。
+
+`关注点：`和上面的题目代码基本就差最后的如果找不到的返回值。**我觉得就记得返回left就可以了**。
+
+```python
+class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+
+        left = 0
+        right = len(nums) - 1
+        
+        # interestingly even these edge cases can be handled by the logic below which returns left
+        # if target < nums[left]:
+        #     return 0
+
+        # if target > nums[right]:
+        #     return len(nums)
+
+        while left <= right: 
+            mid = left + (right - left) // 2
+            if nums[mid] == target: 
+                return mid
+            elif nums[mid] > target:
+                right = mid - 1
+            else:
+                left = mid + 1
+
+        return left
+```
+## #34. Find First and Last Position of Element in Sorted Array
+(https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+`题目：`
+Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.
+
+If target is not found in the array, return [-1, -1]. You must write an algorithm with O(log n) runtime complexity.
+
+
+`思路：`思路是要找到第一个mid后向左和向右binary search继续找。但是写不出来code。这里把题解的链接贴一下。复习的时候可以再次尝试写一写。
+（https://programmercarl.com/0034.%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E5%85%83%E7%B4%A0%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%92%8C%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE.html#%E6%80%9D%E8%B7%AF）
 
 
 ## #27 Remove Element 
