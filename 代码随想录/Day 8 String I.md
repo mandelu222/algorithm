@@ -64,6 +64,9 @@ Return a string of the words in reverse order concatenated by a single space.
 Note that s may contain leading or trailing spaces or multiple spaces between two words. The returned string should only have a single space separating the words. Do not include any extra spaces.
 
 `思路`
+网站上的做法是 1）用双指针去除多余空格；2）翻转整个字符串；3）翻转各个单词。因为是用c++来讲的，这种方法可以实现空间复杂度O(n)。但是python的字符串是不变的，所以一定会生成新的字符串。空间复杂度不可能是O(n)。
+
+双指针做法参考(https://leetcode.com/problems/remove-element)
 
 ```python
 class Solution:
@@ -71,7 +74,6 @@ class Solution:
 
         s = s.strip()
         worlds = []
-
         while s:
             space = s.find(" ")
             print(space)
@@ -85,8 +87,19 @@ class Solution:
         world = worlds[::-1]
         return " ".join(world)
 ```
+网站上的做法。对比一下发现我就是忘记了.split。所以写在分隔单词上的代码很麻烦。
 
-
+```python
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        # 删除前后空白
+        s = s.strip()
+        # 反转整个字符串
+        s = s[::-1]
+        # 将字符串拆分为单词，并反转每个单词
+        s = ' '.join(word[::-1] for word in s.split())
+        return s
+```
 
 ## 剑指 Offer 05. 替换空格 LCOF
 
