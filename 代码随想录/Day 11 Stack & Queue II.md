@@ -104,3 +104,72 @@ The division between two integers always truncates toward zero.
 There will not be any division by zero.
 The input represents a valid arithmetic expression in a reverse polish notation.
 The answer and all the intermediate calculations can be represented in a 32-bit integer.
+
+```python
+
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+
+        stack = []
+
+        for token in tokens:
+            if token in ("+", "-", "*", "/"):
+                num1 = stack.pop()
+                num2 = stack.pop()
+                num = self.apply_operation(num2, num1, token)
+                stack.append(num)
+            else:
+                # 第一次用了isinstance, 然后发现数字都是str
+                stack.append(int(token))
+
+        return stack.pop()
+
+
+    def apply_operation(self, num1, num2, token):
+        if token == "+":
+            return num1 + num2
+        if token == "-":
+            return num1 - num2
+        if token == "*":
+            return num1 * num2
+        if token == "/":
+            # 主要时间花在这里。需要让 6/-132 = 0， 发现只有这个写法。
+            return int (num1 / num2)
+```
+
+看了网站上的做法有两个替代了`apply_operation`这个挺丑的function：第一个用了lambda和operator library; 第二个用了超级慢的eval。
+
+```python
+from operator import add, sub, mul
+
+class Solution:
+
+    op_map = {'+': add, '-': sub, '*': mul, '/': lambda x, y: int(x / y)}
+    
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        for token in tokens:
+            if token not in {'+', '-', '*', '/'}:
+                stack.append(int(token))
+            else:
+                op2 = stack.pop()
+                op1 = stack.pop()
+                stack.append(self.op_map[token](op1, op2))  # 第一个出来的在运算符后面
+        return stack.pop()
+
+```
+
+```python
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        for item in tokens:
+            if item not in {"+", "-", "*", "/"}:
+                stack.append(item)
+            else:
+                first_num, second_num = stack.pop(), stack.pop()
+                stack.append(
+                    int(eval(f'{second_num} {item} {first_num}'))   # 第一个出来的在运算符后面
+                )
+        return int(stack.pop()) # 如果一开始只有一个数，那么会是字符串形式的
+```
